@@ -11,12 +11,13 @@ def findCorrespondance(a, b):
     Returns:
         list: List of matching points: R,G,B,x1,y1,x2,y2
     """
+    database_path = "Data/"
     matching_list = []
 
     if (a == 1):
-        with open("../Data/matching1.txt") as f:
+        with open(database_path + "matching1.txt") as f:
             line_no = 1
-            print("File opened")
+            # print("File opened")
             for line in f:
                 if line_no == 1:
                     start_index = line.find(':')
@@ -32,9 +33,9 @@ def findCorrespondance(a, b):
                 else:
                     matching_list.append(line.rstrip('\n'))
     if (a == 2):
-        with open("../Data/matching2.txt") as f:
+        with open(database_path + "matching2.txt") as f:
             line_no = 1
-            print("File opened")
+            # print("File opened")
             for line in f:
                 if line_no == 1:
                     start_index = line.find(':')
@@ -51,9 +52,9 @@ def findCorrespondance(a, b):
                     matching_list.append(line.rstrip('\n'))
 
     if (a == 3):
-        with open("../Data/matching3.txt") as f:
+        with open(database_path + "matching3.txt") as f:
             line_no = 1
-            print("File opened")
+            # print("File opened")
             for line in f:
                 if line_no == 1:
                     start_index = line.find(':')
@@ -70,7 +71,7 @@ def findCorrespondance(a, b):
                     matching_list.append(line.rstrip('\n'))
 
     if (a == 4):
-        with open("../Data/matching4.txt") as f:
+        with open(database_path + "matching4.txt") as f:
             line_no = 1
             print("File opened")
             for line in f:
@@ -89,9 +90,9 @@ def findCorrespondance(a, b):
                     matching_list.append(line.rstrip('\n'))
 
     if (a == 5):
-        with open("../Data/matching5.txt") as f:
+        with open(database_path + "matching5.txt") as f:
             line_no = 1
-            print("File opened")
+            # print("File opened")
             for line in f:
                 if line_no == 1:
                     start_index = line.find(':')
@@ -143,6 +144,6 @@ def findCorrespondance(a, b):
             output_list.append(np.transpose(new_row))
 #     print("final List", final_list)
     matching_list = output_list
-    print("Done extracting correspondance points. Format:R,G,B,x1,y1,x2,y2")
-    print("Number of correspondance points: ", len(matching_list))
+    # print("Done extracting correspondance points. Format:R,G,B,x1,y1,x2,y2")
+    # print("Number of correspondance points: ", len(matching_list))
     return matching_list
