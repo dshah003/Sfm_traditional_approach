@@ -5,14 +5,14 @@ import numpy as np
 
 def GetInliersRANSAC(corr_list, thresh):
     print("Into GetInliersRANSAC now,")
-    num_points_F = 15
+    num_points_F = len(corr_list)
     corr_list = np.transpose(corr_list)
-    print("Shape of corr_list = ", len(corr_list))
+    print("Shape of corr_list = " + str(len(corr_list)))
     maxInliers = []
     finalF = None
-    for i in range(401):
+    for i in range(1001):
         if(i % 40 == 0):
-            print("Running Ransac for ", str(i) + "/400")
+            print("Running Ransac for " + str(i) + "/1000")
         corr = []
         # find n random points to calculate a homography
         for n in range(num_points_F):
@@ -20,24 +20,27 @@ def GetInliersRANSAC(corr_list, thresh):
 
         # Calculate Fundamental Matrix function on those points
         # print("shape of corr for Fundamental Matrix = ", np.shape(corr))
-        f = EFM.EstimateFundamentalMatrix(corr, 15)
+        f = EFM.EstimateFundamentalMatrix(corr, num_points_F)
         inliers = []
 
-        for i in range(len(corr_list)):
-            # print("shape corr_list[", i, "]: ", np.shape(corr_list[i]))
-            d = geometricDistance(corr_list[i], f)
+        for j in range(len(corr_list)):
+            # print("shape corr_list[", j, "]: ", np.shape(corr_list[j]))
+            d = geometricDistance(corr_list[j], f)
             if d < thresh:
-                inliers.append(corr_list[i])
+                inliers.append(corr_list[j])
+                # print("--  This is an inliner --")
         # print("len(corr) = ", len(corr))
         if len(inliers) > len(maxInliers):
             maxInliers = inliers
             finalF = f
-        if (i == 400):
-            print("Corr size: ", len(corr_list), " NumInliers: ",
-                len(inliers), "Max inliers: ", len(maxInliers))
+        if (i == 1000):
+            print("Corr size: " + str(len(corr_list)) + ", NumInliers: " +
+                str(len(inliers)) + ", Max inliers: " + str(len(maxInliers)))
 
         # if len(maxInliers) > (len(corr) * thresh):
             # break
+
+    print("shape of inliers = ", np.shape(maxInliers))
     return finalF, maxInliers
 
 

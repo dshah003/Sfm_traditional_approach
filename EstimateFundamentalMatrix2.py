@@ -25,7 +25,7 @@ def EstimateFundamentalMatrix(points_list, n):
     C5 = y1 * y2
     C6 = y1
     C7 = x2
-    C8 = y1
+    C8 = y2
     C9 = np.ones((len(x1), 1))
 
     # print("C1 shape: ", C1.shape)
@@ -47,6 +47,14 @@ def EstimateFundamentalMatrix(points_list, n):
     # print("S shape: ", S.shape)
     # print("V shape: ", V_trans.shape)
     F = V_trans[-1].reshape(3, 3)
+    # print("F = ", F)
+
+    # constrain F
+    # make rank 2 by zeroing out last singular value
+    U, S, V = np.linalg.svd(F)
+    S[2] = 0
+    F = np.dot(U, np.dot(np.diag(S), V))
+    F / F[2, 2]
     # print("F = ", F)
 
     return F
