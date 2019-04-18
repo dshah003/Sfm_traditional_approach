@@ -14,34 +14,16 @@ def findCorrespondance(a, b):
     database_path = "Data/"
     matching_list = []
 
-    if (a == 1):
-        with open(database_path + "matching1.txt") as f:
+    if (1 <= a <= 6):
+        with open(database_path + "matching" + str(a) + ".txt") as f:
             line_no = 1
             # print("File opened")
             for line in f:
                 if line_no == 1:
-                    start_index = line.find(':')
-#                     print("start_index = ", start_index )
-                    end_index = len(line)
-#                     print("end_index = ", end_index)
-                    line_no += 1
-                    nfeatures = line[11:15]
-                    nfeatures = int(nfeatures)
-#                     print("nfeatures = ",line[11:15])
-        #         print("type of v(line) = ",type(line))
-        #         print(line)
-                else:
-                    matching_list.append(line.rstrip('\n'))
-    if (a == 2):
-        with open(database_path + "matching2.txt") as f:
-            line_no = 1
-            # print("File opened")
-            for line in f:
-                if line_no == 1:
-                    start_index = line.find(':')
-#                     print("start_index = ", start_index )
-                    end_index = len(line)
-#                     print("end_index = ", end_index)
+                    # start_index = line.find(':')
+                    # print("start_index = ", start_index )
+                    # end_index = len(line)
+                    # print("end_index = ", end_index)
                     line_no += 1
                     nfeatures = line[11:15]
                     nfeatures = int(nfeatures)
@@ -51,62 +33,102 @@ def findCorrespondance(a, b):
                 else:
                     matching_list.append(line.rstrip('\n'))
 
-    if (a == 3):
-        with open(database_path + "matching3.txt") as f:
-            line_no = 1
-            # print("File opened")
-            for line in f:
-                if line_no == 1:
-                    start_index = line.find(':')
-#                     print("start_index = ", start_index )
-                    end_index = len(line)
-#                     print("end_index = ", end_index)
-                    line_no += 1
-                    nfeatures = line[11:15]
-                    nfeatures = int(nfeatures)
-#                     print("nfeatures = ",line[11:15])
-        #         print("type of v(line) = ",type(line))
-        #         print(line)
-                else:
-                    matching_list.append(line.rstrip('\n'))
+#     if (a == 1):
+#         with open(database_path + "matching1.txt") as f:
+#             line_no = 1
+#             # print("File opened")
+#             for line in f:
+#                 if line_no == 1:
+#                     start_index = line.find(':')
+# #                     print("start_index = ", start_index )
+#                     end_index = len(line)
+# #                     print("end_index = ", end_index)
+#                     line_no += 1
+#                     nfeatures = line[11:15]
+#                     nfeatures = int(nfeatures)
+# #                     print("nfeatures = ",line[11:15])
+#         #         print("type of v(line) = ",type(line))
+#         #         print(line)
+#                 else:
+#                     matching_list.append(line.rstrip('\n'))
+#     if (a == 2):
+#         with open(database_path + "matching2.txt") as f:
+#             line_no = 1
+#             # print("File opened")
+#             for line in f:
+#                 if line_no == 1:
+#                     start_index = line.find(':')
+# #                     print("start_index = ", start_index )
+#                     end_index = len(line)
+# #                     print("end_index = ", end_index)
+#                     line_no += 1
+#                     nfeatures = line[11:15]
+#                     nfeatures = int(nfeatures)
+# #                     print("nfeatures = ",line[11:15])
+#         #         print("type of v(line) = ",type(line))
+#         #         print(line)
+#                 else:
+#                     matching_list.append(line.rstrip('\n'))
 
-    if (a == 4):
-        with open(database_path + "matching4.txt") as f:
-            line_no = 1
-            print("File opened")
-            for line in f:
-                if line_no == 1:
-                    start_index = line.find(':')
-#                     print("start_index = ", start_index )
-                    end_index = len(line)
-#                     print("end_index = ", end_index)
-                    line_no += 1
-                    nfeatures = line[11:15]
-                    nfeatures = int(nfeatures)
-#                     print("nfeatures = ",line[11:15])
-        #         print("type of v(line) = ",type(line))
-        #         print(line)
-                else:
-                    matching_list.append(line.rstrip('\n'))
+#     if (a == 3):
+#         with open(database_path + "matching3.txt") as f:
+#             line_no = 1
+#             # print("File opened")
+#             for line in f:
+#                 if line_no == 1:
+#                     start_index = line.find(':')
+# #                     print("start_index = ", start_index )
+#                     end_index = len(line)
+# #                     print("end_index = ", end_index)
+#                     line_no += 1
+#                     nfeatures = line[11:15]
+#                     nfeatures = int(nfeatures)
+# #                     print("nfeatures = ",line[11:15])
+#         #         print("type of v(line) = ",type(line))
+#         #         print(line)
+#                 else:
+#                     matching_list.append(line.rstrip('\n'))
 
-    if (a == 5):
-        with open(database_path + "matching5.txt") as f:
-            line_no = 1
-            # print("File opened")
-            for line in f:
-                if line_no == 1:
-                    start_index = line.find(':')
-#                     print("start_index = ", start_index )
-                    end_index = len(line)
-#                     print("end_index = ", end_index)
-                    line_no += 1
-                    nfeatures = line[start_index + 2:end_index - 1]
-                    nfeatures = int(nfeatures)
-#                     print("nfeatures = ",line[11:15])
-        #         print("type of v(line) = ",type(line))
-        #         print(line)
-                else:
-                    matching_list.append(line.rstrip('\n'))
+#     if (a == 4):
+#         with open(database_path + "matching4.txt") as f:
+#             line_no = 1
+#             print("File opened")
+#             for line in f:
+#                 if line_no == 1:
+#                     start_index = line.find(':')
+# #                     print("start_index = ", start_index )
+#                     end_index = len(line)
+# #                     print("end_index = ", end_index)
+#                     line_no += 1
+#                     nfeatures = line[11:15]
+#                     nfeatures = int(nfeatures)
+# #                     print("nfeatures = ",line[11:15])
+#         #         print("type of v(line) = ",type(line))
+#         #         print(line)
+#                 else:
+#                     matching_list.append(line.rstrip('\n'))
+
+#     if (a == 5):
+#         with open(database_path + "matching5.txt") as f:
+#             line_no = 1
+#             # print("File opened")
+#             for line in f:
+#                 if line_no == 1:
+#                     start_index = line.find(':')
+# #                     print("start_index = ", start_index )
+#                     end_index = len(line)
+# #                     print("end_index = ", end_index)
+#                     line_no += 1
+#                     nfeatures = line[start_index + 2:end_index - 1]
+#                     nfeatures = int(nfeatures)
+# #                     print("nfeatures = ",line[11:15])
+#         #         print("type of v(line) = ",type(line))
+#         #         print(line)
+#                 else:
+#                     matching_list.append(line.rstrip('\n'))
+    else:
+        print("First image argument Number not found")
+
     final_list = []
     for i in range(0, len(matching_list)):
         current_row = matching_list[i]

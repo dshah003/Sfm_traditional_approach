@@ -1,3 +1,5 @@
+import numpy as np
+
 
 def EstimateFundamentalMatrix(points_img1, points_img2, n):
     x1 = points_img1[:][0]

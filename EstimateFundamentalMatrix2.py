@@ -2,6 +2,9 @@ import numpy as np
 
 
 def EstimateFundamentalMatrix(points_list, n):
+    points_list = np.transpose(points_list)
+    # print("points_list = ", points_list)
+    # print("points_list[:][0]", points_list[:][0])
     x1 = points_list[:][0]
     x1 = x1[1:n]
     x1 = np.array(x1).reshape((len(x1), -1))
@@ -37,13 +40,13 @@ def EstimateFundamentalMatrix(points_list, n):
 
     A = np.array([C1, C2, C3, C4, C5, C6, C7, C8, C9])
     A = A.reshape((n - 1, 9))
-    print("A shape : ", np.shape(A))
+    # print("A shape : ", np.shape(A))
     # print("A = ",A)
     U, S, V_trans = np.linalg.svd(A)
-    print("U Shape: ", U.shape)
-    print("S shape: ", S.shape)
-    print("V shape: ", V_trans.shape)
+    # print("U Shape: ", U.shape)
+    # print("S shape: ", S.shape)
+    # print("V shape: ", V_trans.shape)
     F = V_trans[-1].reshape(3, 3)
-    print("F = ", F)
+    # print("F = ", F)
 
     return F
