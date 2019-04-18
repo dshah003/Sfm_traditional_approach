@@ -17,6 +17,40 @@ def EstimateFundamentalMatrix(points_list, n):
     y2 = points_list[:][3]
     y2 = y2[1:n]
     y2 = np.array(y2).reshape((len(y2), -1))
+    sz = n-1
+
+        # Scaling for image points for first image
+    cent1_x = np.mean(x1)
+    cent1_y = np.mean(y1)
+    x1 = x1 - cent1_x * np.ones([sz,1])
+    y1 = y1 - cent1_y * np.ones([sz,1])
+    avg_dist = np.sqrt(np.sum(np.power(x1,2)  + np.power(y1,2))) / sz
+    scaling_1 = np.sqrt(2) / avg_dist
+    x1 = scaling_1 * x1
+    y1 = scaling_1 * y1
+
+
+    Scaled_1 = np.array([[scaling_1,         0,(-scaling_1*cent1_x)],
+                        [0, scaling_1,(-scaling_1*cent1_y)],
+                        [0,         0,                    1]])
+
+    # Scaling for image points for first image
+    cent2_x = np.mean(x2)
+    cent2_y = np.mean(y2)
+    x2 = x2 - cent2_x * np.ones([sz,1])
+    y2 = y2 - cent2_y * np.ones([sz,1])
+    avg_dist = np.sqrt(np.sum(np.power(x2,2)  + np.power(y2,2))) / sz
+    scaling_2 = np.sqrt(2) / avg_dist
+    x2 = scaling_2 * x2
+    y2 = scaling_2 * y2
+
+    Scaled_2 = np.array([[scaling_2,0,-scaling_2*cent2_x],
+           [0, scaling_2,-scaling_2*cent2_y],
+           [0,0,1]])
+
+
+
+
 
     C1 = x1 * x2
     C2 = x1 * y2
@@ -46,15 +80,26 @@ def EstimateFundamentalMatrix(points_list, n):
     # print("U Shape: ", U.shape)
     # print("S shape: ", S.shape)
     # print("V shape: ", V_trans.shape)
-    F = V_trans[-1].reshape(3, 3)
+
+    # -1 gives last row, [:,1] gives last column
+    F = V_trans[:, -1].reshape(3, 3)
     # print("F = ", F)
 
     # constrain F
     # make rank 2 by zeroing out last singular value
-    U, S, V = np.linalg.svd(F)
-    S[2] = 0
-    F = np.dot(U, np.dot(np.diag(S), V))
-    F / F[2, 2]
+    # U, S, V = np.linalg.svd(F)
+    # S[2] = 0
+    # F = np.dot(U, np.dot(np.diag(S), V))
+    # F / F[2, 2]
+    F = F / np.linalg.norm(F)
+    uf,sf,vf = np.linalg.svd(F)
+
+    F = np.dot(uf,np.dot(np.diag([sf[0],sf[1],0]),vf.T))
+
+    # Denormalizing
+    F = np.dot(Scaled_2.T,np.dot(F,Scaled_1))
+    F = F/F[2,2]
+
     # print("F = ", F)
 
     return F

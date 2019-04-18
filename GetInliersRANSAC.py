@@ -10,9 +10,10 @@ def GetInliersRANSAC(corr_list, thresh):
     print("Shape of corr_list = " + str(len(corr_list)))
     maxInliers = []
     finalF = None
-    for i in range(1001):
-        if(i % 40 == 0):
-            print("Running Ransac for " + str(i) + "/1000")
+    niterations  = 1000
+    for i in range(niterations+1):
+        if(i % (niterations/10) == 0):
+            print("Running Ransac for " + str(i) + "/" + str(niterations))
         corr = []
         # find n random points to calculate a homography
         for n in range(num_points_F):
@@ -33,7 +34,7 @@ def GetInliersRANSAC(corr_list, thresh):
         if len(inliers) > len(maxInliers):
             maxInliers = inliers
             finalF = f
-        if (i == 1000):
+        if (i == niterations):
             print("Corr size: " + str(len(corr_list)) + ", NumInliers: " +
                 str(len(inliers)) + ", Max inliers: " + str(len(maxInliers)))
 

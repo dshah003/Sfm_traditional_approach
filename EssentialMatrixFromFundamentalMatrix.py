@@ -12,7 +12,7 @@ def getEssentialMatrix(F):
     K = get_camera_param()
     E = np.matmul(K.T, np.matmul(F, K))
     U, S, V_T = np.linalg.svd(E)
-    if np.linalg.det(np.dot(U, V_T)) < 0:
-        V_T = -V_T
-        E = np.dot(U, np.dot(np.diag([1, 1, 0]), V_T))
+    # if np.linalg.det(np.dot(U, V_T)) < 0:
+    #     V_T = -V_T
+    E = np.dot(U, np.dot(np.diag([1, 1, 0]), V_T))
     return E, U, V_T
