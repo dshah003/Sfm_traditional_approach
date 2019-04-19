@@ -2,13 +2,14 @@ import numpy as np
 import cv2
 # import matplotlib.pyplot as plt
 from findCorrespondance import findCorrespondance
-from GetInliersRANSAC import *
-from EstimateFundamentalMatrix3 import *
-from DrawCorrespondence import *
-from EssentialMatrixFromFundamentalMatrix import *
+from GetInliersRANSAC import GetInliersRANSAC
+# from EstimateFundamentalMatrix import EstimateFundamentalMatrix
+# from EstimateFundamentalMatrix3 import *
+from DrawCorrespondence import DrawCorrespondence
+from EssentialMatrixFromFundamentalMatrix import EssentialMatrixFromFundamentalMatrix
 
 
-elimination_threshold = 5
+# elimination_threshold = 5
 
 all_Fs = []
 all_inliers = []
@@ -29,7 +30,7 @@ for i in range(1, 4):
                 pts1.append(pt1)
                 pts2.append(pt2)
 
-            best_F, inliers_a, inliers_b = ransac_fundamental_matrix(np.int32(pts1), np.int32(pts2))
+            best_F, inliers_a, inliers_b = GetInliersRANSAC(np.int32(pts1), np.int32(pts2))
             # finalF, inliers = GetInliersRANSAC(correspondence_list, elimination_threshold)
             print("Final F = ", best_F)
             all_Fs.append(best_F)

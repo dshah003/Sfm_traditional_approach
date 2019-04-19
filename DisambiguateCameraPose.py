@@ -4,6 +4,7 @@ import numpy as np
 def DisambiguateCameraPose( Cset, Rset, Xset ):
     best = 0
     for i in range(4):
+        Cset[i] = Cset[i].T
         N = Xset[i].shape[0]
         n = 0
         for j in range(N):
