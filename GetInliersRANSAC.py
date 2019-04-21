@@ -1,45 +1,51 @@
-import EstimateFundamentalMatrix2 as EFM
-import random
+""" This file implements the RANSAC algorithm on given matches
+"""
 import numpy as np
+from EstimateFundamentalMatrix import EstimateFundamentalMatrix
 
 
-def GetInliersRANSAC(corr_list, thresh):
-    num_points_F = 15
-    maxInliers = []
-    finalF = None
-    for i in range(1000):
-        corr = []
-        # find n random points to calculate a homography
-        for n in range(num_points_F):
-            corr.append(corr_list[random.randrange(0, len(corr_list))])
+def GetInliersRANSAC(matches_a, matches_b):
+    """ Function to implement RANSAC
 
-        # Calculate Fundamental Matrix function on those points
-        f = EFM.EstimateFundamentalMatrix(corr, 15)
-        inliers = []
+    Args:
+        matches_a (np.array(int32)): Matches of image1
+        matches_b (np.array(int32)): Matches of image2
 
-        for i in range(len(corr_list)):
-            d = geometricDistance(corr_list[i], f)
-            if d < 5:
-                inliers.append(corr_list[i])
+    Returns:
+        best_F: F matrix
+        inliers_a
+        inliers_b
+    """
+    matches_num = matches_a.shape[0]
+    Best_count = 0
 
-        if len(inliers) > len(maxInliers):
-            maxInliers = inliers
-            finalF = f
-        print "Corr size: ", len(corr_list), " NumInliers: ",
-        len(inliers), "Max inliers: ", len(maxInliers)
+    for iter in range(500):
+        sampled_idx = np.random.randint(0, matches_num, size=8)
+        F = EstimateFundamentalMatrix(matches_a[sampled_idx, :], matches_b[sampled_idx, :])
+        in_a = []
+        in_b = []
+        ind = []
+        update = 0
+        for i in range(matches_num):
+            matches_aa = np.append(matches_a[i, :], 1)
+            matches_bb = np.append(matches_b[i, :], 1)
+            error = np.dot(matches_aa, F.T)
+            error = np.dot(error, matches_bb.T)
+            if abs(error) < 0.05:
+                in_a.append(matches_a[i, :])
+                in_b.append(matches_b[i, :])
+                ind.append(i)
+                update += 1
 
-        if len(maxInliers) > (len(corr) * thresh):
-            break
-    return finalF, maxInliers
+        if update > Best_count:
+            Best_count = update
+            best_F = F
+            inliers_a = in_a
+            inliers_b = in_b
+            inlier_index = ind
 
+    inliers_a = np.array(inliers_a)
+    inliers_b = np.array(inliers_b)
+    inlier_index = np.array(inlier_index)
 
-def geometricDistance(correspondence, f):
-    p1 = np.transpose(np.matrix([correspondence[0].item(0),
-                                correspondence[0].item(1), 1]))
-    estimatep2 = np.dot(f, p1)
-    estimatep2 = (1 / estimatep2.item(2)) * estimatep2
-
-    p2 = np.transpose(np.matrix([correspondence[0].item(2),
-                                correspondence[0].item(3), 1]))
-    error = p2 - estimatep2
-    return np.linalg.norm(error)
+    return best_F, inliers_a, inliers_b, inlier_index
