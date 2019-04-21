@@ -33,65 +33,66 @@ def main():
     visualize = Args.Visualize
     
 
-    Mx,My,M = loadData(DataPath)
+    Mx,My,M,Color = loadData(DataPath)
 
 
-    # for i in range(1, n_images):
-    #     for j in range(i+1, n_images + 1): 
+    for i in range(1, n_images):
+        for j in range(i+1, n_images + 1): 
 
-    img1 = 1
-    img2 = 2
-    _,_,_,rgb_list = findCorrespondance(img1, img2,DataPath)
-
-
-    output = np.logical_and(M[:, img1-1], M[:, img2-1])
-    indices, = np.where(output == True)
+            img1 = i
+            img2 = j
+            
 
 
-
-
-    pts1 = np.hstack((Mx[indices,img1-1].reshape((-1,1)),My[indices,img1-1].reshape((-1,1))))
-    pts2 = np.hstack((Mx[indices,img2-1].reshape((-1,1)),My[indices,img2-1].reshape((-1,1))))
-    best_F, inliers_a, inliers_b,inlier_index = GetInliersRANSAC(np.int32(pts1), np.int32(pts2))
-
-    assert len(inliers_a)== len(inliers_b)==len(inlier_index),"Length not matched"
-
-    # if(len(inlier_index)<50):
-    #     continue
-
-    if(visualize):
-        out = DrawCorrespondence(img1, img2, inliers_a, inliers_b)
-        cv2.namedWindow('image',cv2.WINDOW_NORMAL)
-        cv2.resizeWindow('image', 1000,600)
-        cv2.imshow('image', out)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+            output = np.logical_and(M[:, img1-1], M[:, img2-1])
+            indices, = np.where(output == True)
+            rgb_list = Color[indices]
 
 
 
-    E = EssentialMatrixFromFundamentalMatrix(best_F,K)
-    R_set,C_set = ExtractCameraPose(E,K)
+            pts1 = np.hstack((Mx[indices,img1-1].reshape((-1,1)),My[indices,img1-1].reshape((-1,1))))
+            pts2 = np.hstack((Mx[indices,img2-1].reshape((-1,1)),My[indices,img2-1].reshape((-1,1))))
+            best_F, inliers_a, inliers_b,inlier_index = GetInliersRANSAC(np.int32(pts1), np.int32(pts2))
 
-    X_set = []
-    for n in range(0,4):
-        X_set.append(LinearTriangulation(K,np.zeros((3,1)),np.identity(3),C_set[n].T,R_set[n],np.int32(inliers_a),np.int32(inliers_b)))
+            assert len(inliers_a)== len(inliers_b)==len(inlier_index),"Length not matched"
 
-    X, R, C = DisambiguateCameraPose(C_set, R_set, X_set)
+            if(len(inlier_index)<10):
+                continue
 
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111, projection = '3d')
+            if(visualize):
+                out = DrawCorrespondence(img1, img2, inliers_a, inliers_b)
+                cv2.namedWindow('image',cv2.WINDOW_NORMAL)
+                cv2.resizeWindow('image', 1000,600)
+                cv2.imshow('image', out)
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
 
-    # print(X.shape)
-    # print(rgb_list.shape)
-
-    # assert X.shape == rgb_list[inlier_index].shape, "Num points same"
 
 
-    # ax.scatter(X[:,0], X[:,1], X[:,2], c=rgb_list[inlier_index]/255.0)
-    plt.scatter(X[:,0], X[:,2],cmap='g',s=1)
-    axes = plt.gca()
-    # axes.set_xlim([-limit,limit])
-    # axes.set_ylim([-limit,limit])
+            E = EssentialMatrixFromFundamentalMatrix(best_F,K)
+            R_set,C_set = ExtractCameraPose(E,K)
+
+            X_set = []
+            for n in range(0,4):
+                X_set.append(LinearTriangulation(K,np.zeros((3,1)),np.identity(3),C_set[n].T,R_set[n],np.int32(inliers_a),np.int32(inliers_b)))
+
+            X, R, C = DisambiguateCameraPose(C_set, R_set, X_set)
+
+            # fig = plt.figure(1)
+            # ax = plt.axes(projection = '3d')
+
+            print(X.shape)
+            print(rgb_list[inlier_index].shape)
+
+            assert X.shape == rgb_list[inlier_index].shape, "Num points same"
+
+
+            # ax.scatter3D(X[:,0], X[:,1], X[:,2], c=rgb_list[inlier_index]/255.0,s=1)
+            plt.scatter(X[:,0], X[:,2],c=rgb_list[inlier_index]/255.0,s=1)
+            axes = plt.gca()
+            axes.set_xlim([-limit,limit])
+            axes.set_ylim([-limit,limit])
+            # axes.set_zlim([-limit,limit])
     plt.show()
 
     # X_final = NonLinearTriangulation(K,x1,x2,X,R1,C1,R2,C2)

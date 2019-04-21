@@ -5,11 +5,11 @@ def loadData(path = "Data/"):
     Mx = []
     My = []
     M =[]
+    Color = []
     for i in range(1, n_images):
         mx = []
         my = []
         m =[]
-        rgb = []
         for j in range(i+1, n_images + 1):
 
             x_list,y_list,binary_list,rgb_list = findCorrespondance(i, j,path)
@@ -19,15 +19,19 @@ def loadData(path = "Data/"):
                 my = y_list
                 m = binary_list
 
+
             else:
                 mx = np.hstack((mx,x_list[:,1].reshape((-1,1))))
                 my = np.hstack((my,y_list[:,1].reshape((-1,1))))
                 m = np.hstack((m,binary_list[:,1].reshape((-1,1))))
+                
              
         if(i==1):
             Mx = mx
             My = my
             M = m
+            Color = rgb_list
+
         else:   
             
             mx = np.hstack((np.zeros((mx.shape[0],i-1)),mx))
@@ -38,7 +42,8 @@ def loadData(path = "Data/"):
             assert My.shape[1]==my.shape[1],"Shape My not matched"
             My = np.vstack((My,my))
             M = np.vstack((M,m))
-    return Mx,My,M
+            Color = np.vstack((Color,rgb_list))
+    return Mx,My,M,Color
 
 
 def findCorrespondance(a, b,database_path):
@@ -93,13 +98,12 @@ def findCorrespondance(a, b,database_path):
         x_row.append(current_row[3])
         y_row.append(current_row[4])
         binary_row.append(1)
+        rgb_row.append(current_row[0])
+        rgb_row.append(current_row[1])
+        rgb_row.append(current_row[2])
 
         if(len(res[0]) != 0):
             index = res[0][0]
-
-            rgb_row.append(current_row[0])
-            rgb_row.append(current_row[1])
-            rgb_row.append(current_row[2])
             x_row.append(current_row[index + 1])
             y_row.append(current_row[index + 2])
             binary_row.append(1)
@@ -114,5 +118,7 @@ def findCorrespondance(a, b,database_path):
             y_list.append(np.transpose(y_row))
             binary_list.append(np.transpose(binary_row))
             rgb_list.append(np.transpose(rgb_row))
+
     
+
     return np.array(x_list), np.array(y_list), np.array(binary_list), np.array(rgb_list)
