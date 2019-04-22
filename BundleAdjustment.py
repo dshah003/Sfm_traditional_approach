@@ -15,8 +15,6 @@ def reprojError(CQ, K, X, x):
     
     P = np.dot(np.dot(K, R), np.hstack((np.identity(3), -C)))
     
-
-    # print("P",P.shape, X3D.shape)
     u_rprj = (np.dot(P[0, :], X.T)).T / (np.dot(P[2, :], X.T)).T
     v_rprj = (np.dot(P[1, :], X.T)).T / (np.dot(P[2, :], X.T)).T
     e1 = x[:,0] - u_rprj

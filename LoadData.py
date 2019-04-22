@@ -1,4 +1,5 @@
 import numpy as np
+from GetInliersRANSAC import GetInliersRANSAC
 
 def loadData(path="Data/"):
     n_images = 6
@@ -122,3 +123,31 @@ def findCorrespondance(a, b, database_path):
 
 
     return np.array(x_list), np.array(y_list), np.array(binary_list), np.array(rgb_list)
+
+def inlier_filter(Mx,My,M,n_images):
+    for i in range(1, n_images):
+        for j in range(i + 1, n_images + 1):
+            img1 = i
+            img2 = j
+
+            print("Finding inliers between image " + str(i) + " and " + str(j))
+            output = np.logical_and(M[:, img1 - 1], M[:, img2 - 1])
+            indices, = np.where(output == True)
+            if (len(indices) < 8):
+                continue
+            # rgb_list = Color[indices]
+            pts1 = np.hstack((Mx[indices, img1 - 1].reshape((-1, 1)),
+                              My[indices, img1 - 1].reshape((-1, 1))))
+            pts2 = np.hstack((Mx[indices, img2 - 1].reshape((-1, 1)),
+                              My[indices, img2 - 1].reshape((-1, 1))))
+
+            _, inliers_a, inliers_b, inlier_index = GetInliersRANSAC(
+                np.float32(pts1), np.float32(pts2), indices)
+            assert len(inliers_a) == len(inliers_b) == len(
+                inlier_index), "Length not matched"
+
+            for k in indices:
+                if (np.isin(inlier_index, k)[0]):
+
+                    M[k, i - 1] = 0
+    return M

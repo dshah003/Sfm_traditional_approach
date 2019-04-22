@@ -45,7 +45,7 @@ def PnPRANSAC(X, x, K):
     cnt = 0
     M = x.shape[0]
     # p = 0.99
-    threshold = 2  #6
+    threshold = 5  #6
     # N = 1
     # idx = 0
     # X_ = LPnP.convertHomogeneouos(X)
@@ -61,8 +61,8 @@ def PnPRANSAC(X, x, K):
         S = []
         for j in range(M):
             reprojection = proj3Dto2D(x_[j][:], K, C, R)
-            e = np.square(
-                np.sqrt((x_[j, 0]) - reprojection[0]) +
+            e = np.sqrt(
+                np.square((x_[j, 0]) - reprojection[0]) +
                 np.square((x_[j, 1] - reprojection[1])))
             if e < threshold:
                 S.append(j)
