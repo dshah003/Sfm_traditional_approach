@@ -1,7 +1,52 @@
 import numpy as np
 
+def loadData(path="Data/"):
+    n_images = 6
+    Mx = []
+    My = []
+    M =[]
+    Color = []
+    for i in range(1, n_images):
+        mx = []
+        my = []
+        m =[]
+        for j in range(i+1, n_images + 1):
 
-def findCorrespondance(a, b):
+            x_list,y_list,binary_list,rgb_list = findCorrespondance(i, j,path)
+
+            if(j==i+1):
+                mx = x_list
+                my = y_list
+                m = binary_list
+
+
+            else:
+                mx = np.hstack((mx,x_list[:,1].reshape((-1,1))))
+                my = np.hstack((my,y_list[:,1].reshape((-1,1))))
+                m = np.hstack((m,binary_list[:,1].reshape((-1,1))))
+
+
+        if(i==1):
+            Mx = mx
+            My = my
+            M = m
+            Color = rgb_list
+
+        else:
+
+            mx = np.hstack((np.zeros((mx.shape[0],i-1)),mx))
+            my = np.hstack((np.zeros((my.shape[0],i-1)),my))
+            m = np.hstack((np.zeros((m.shape[0],i-1)),m))
+            assert Mx.shape[1]==mx.shape[1],"SHape not matched"
+            Mx = np.vstack((Mx,mx))
+            assert My.shape[1]==my.shape[1],"Shape My not matched"
+            My = np.vstack((My,my))
+            M = np.vstack((M,m))
+            Color = np.vstack((Color,rgb_list))
+    return Mx,My,M,Color
+
+
+def findCorrespondance(a, b, database_path):
     """To extract corrospondance between 2 images from given file
 
     Args:
@@ -11,9 +56,7 @@ def findCorrespondance(a, b):
     Returns:
         list: List of matching points: R,G,B,x1,y1,x2,y2
     """
-    database_path = "Data/"
     matching_list = []
-
     if (1 <= a <= 6):
         with open(database_path + "matching" + str(a) + ".txt") as f:
             line_no = 1
@@ -55,13 +98,12 @@ def findCorrespondance(a, b):
         x_row.append(current_row[3])
         y_row.append(current_row[4])
         binary_row.append(1)
+        rgb_row.append(current_row[0])
+        rgb_row.append(current_row[1])
+        rgb_row.append(current_row[2])
 
         if(len(res[0]) != 0):
             index = res[0][0]
-
-            rgb_row.append(current_row[0])
-            rgb_row.append(current_row[1])
-            rgb_row.append(current_row[2])
             x_row.append(current_row[index + 1])
             y_row.append(current_row[index + 2])
             binary_row.append(1)
@@ -76,5 +118,7 @@ def findCorrespondance(a, b):
             y_list.append(np.transpose(y_row))
             binary_list.append(np.transpose(binary_row))
             rgb_list.append(np.transpose(rgb_row))
+
+
 
     return np.array(x_list), np.array(y_list), np.array(binary_list), np.array(rgb_list)
