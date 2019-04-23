@@ -151,7 +151,12 @@ def inlier_filter(Mx, My, M, n_images):
             print("Inliers found :" + str(len(inliers_a)) + "/" +
                   str(len(pts1)))
             for k in indices:
+<<<<<<< HEAD
                 if(k not in inlier_index):
+=======
+                # if (np.isin(inlier_index, k)[0]):
+                if (k not in inlier_index):
+>>>>>>> ee92d03d1cb408dcf62e57694706fd5054cbaebc
                     M[k, i - 1] = 0
                     # M[k, j - 1] = 0
                     # if j == i+1:

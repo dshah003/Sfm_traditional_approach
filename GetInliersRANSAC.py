@@ -33,7 +33,7 @@ def GetInliersRANSAC(matches_a, matches_b, indices):
             matches_bb = np.append(matches_b[i, :], 1)
             error = np.dot(matches_aa, F.T)
             error = np.dot(error, matches_bb.T)
-            if abs(error) < 0.003:
+            if abs(error) < 0.005:
                 in_a.append(matches_a[i, :])
                 in_b.append(matches_b[i, :])
                 ind.append(indices[i])
