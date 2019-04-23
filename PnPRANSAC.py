@@ -45,7 +45,7 @@ def PnPRANSAC(X, x, K):
     cnt = 0
     M = x.shape[0]
     # p = 0.99
-    threshold = 5  #6
+    threshold = 15    #6
     # N = 1
     # idx = 0
     # X_ = LPnP.convertHomogeneouos(X)
