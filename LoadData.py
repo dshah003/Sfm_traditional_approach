@@ -147,7 +147,7 @@ def inlier_filter(Mx,My,M,n_images):
                 inlier_index), "Length not matched"
 
             for k in indices:
-                if (np.isin(inlier_index, k)[0]):
-
+                # if (np.isin(inlier_index, k)[0]):
+                if (k not in inlier_index):
                     M[k, i - 1] = 0
     return M

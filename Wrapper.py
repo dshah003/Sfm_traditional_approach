@@ -53,8 +53,8 @@ def main():
 
     #  Filter M for inliers
 
-    # M = inlier_filter(Mx,My,M,n_images)
-    M = np.load('M.npy')
+    M = inlier_filter(Mx,My,M,n_images)
+    # M = np.load('M.npy')
 
 
 
@@ -83,23 +83,28 @@ def main():
 
     E = EssentialMatrixFromFundamentalMatrix(best_F, K)
     R_set, C_set = ExtractCameraPose(E, K)
-
+    # print(R_set)
+    # print(C_set)
     X_set = []
     color = ['r','g','b','k']
+    
     for n in range(0, 4):
         X1 = LinearTriangulation(K, np.zeros((3, 1)), np.identity(3),
                                 C_set[n].T, R_set[n], np.float32(pts1),
                                 np.float32(pts2))
         X_set.append(X1)
-        plt.scatter(X1[:, 0], X1[:, 2], c=color[n], s=4)
-        ax = plt.gca()
-        ax.set_xlabel('z')
-        ax.set_ylabel('y')
+        # ax = plt.axes(projection='3d')
+        # ax.scatter3D(X1[:, 0], X1[:,1],X1[:, 2], c=color[n], s=4)
+        # ax = plt.gca()
+        # ax.set_xlabel('x')
+        # ax.set_ylabel('y')
+        # ax.set_ylabel('z')
         
-        ax.set_xlim([-0.5, 0.5])
-        ax.set_ylim([-0.1, 2])
+        # ax.set_xlim([-1, 1])
+        # ax.set_ylim([-1, 1])
+        # ax.set_zlim([-1,1])
 
-    plt.show()
+        # plt.show()
 
     X, R, C = DisambiguateCameraPose(C_set, R_set, X_set)
 
@@ -109,13 +114,13 @@ def main():
     Visibility = np.zeros((M.shape[0],n_images))
 
     #Plotting Linear Triangulation output
-    plt.scatter(X[:, 0], X[:, 2], c='g', s=4)
-    ax = plt.gca()
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
+    # plt.scatter(X[:, 0], X[:, 2], c='g', s=4)
+    # ax = plt.gca()
+    # ax.set_xlabel('x')
+    # ax.set_ylabel('y')
     
-    ax.set_xlim([-0.5, 0.5])
-    ax.set_ylim([-0.1, 2])
+    # ax.set_xlim([-0.5, 0.5])
+    # ax.set_ylim([-0.1, 2])
 
     
 
@@ -126,16 +131,16 @@ def main():
     Visibility[indices,img1-1]=1
     Visibility[indices,img2-1]=1
 
-    # Plotting non linear triangulation output
-    plt.scatter(X[:, 0], X[:, 2], c='r', s=4)
-    ax = plt.gca()
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
+    # # Plotting non linear triangulation output
+    # plt.scatter(X[:, 0], X[:, 2], c='r', s=4)
+    # ax = plt.gca()
+    # ax.set_xlabel('x')
+    # ax.set_ylabel('y')
     
-    ax.set_xlim([-0.5, 0.5])
-    ax.set_ylim([-0.1, 2])
+    # ax.set_xlim([-0.5, 0.5])
+    # ax.set_ylim([-0.1, 2])
 
-    plt.show()
+    # plt.show()
 
     Cset = []
     Rset = []
@@ -163,12 +168,12 @@ def main():
         X = X_3D[indices, :]
 
         C,R = PnPRANSAC(X, x, K)
-        print(C)
-        print(R)
+        # print(C)
+        # print(R)
 
         C,R = NonLinearPnP(X,x,K,C,R)
-        print(C)
-        print(R)
+        # print(C)
+        # print(R)
 
         Cset.append(C)
         Rset.append(R)
@@ -200,49 +205,76 @@ def main():
             Visibility[indices,r_indx[j]]=1
             Visibility[indices,j]=1
 
-        for i in range(len(X_3D)):
-            if(X_3D[i,2]<0):
-                Visibility[i,:] = 0
-                recon_bin[i] = 0
+        for o in range(len(X_3D)):
+            if(X_3D[o,2]<0):
+                Visibility[o,:] = 0
+                recon_bin[o] = 0
 
         
 
         V_bundle = BuildVisibilityMatrix(Visibility,r_indx)
 
-        traj = (Mx[:,r_indx],My[:,r_indx])
+        
+        point_indices,_ = np.where(recon_bin == 1)
+        # temp,_ = np.where(M[point_indices]==1)
+        # print(temp)
+        camera_indices = i*np.ones((len(point_indices),1))
 
-        # print(len(Rset),r_indx)
+        points_2d = np.hstack((Mx[point_indices,i].reshape((-1,1)),Mx[point_indices,i].reshape((-1,1))))
 
-        # R_final,C_final,X_final = BundleAdjustment(Cset, Rset, X_3D, K, traj, V_bundle)
+        Rset,Cset,X_3D = BundleAdjustment(Cset, Rset, X_3D, K, points_2d, camera_indices,recon_bin,V_bundle)
 
-    # # For 3D plotting
-    # ax = plt.axes(projection='3d')
-    # # Data for three-dimensional scattered points
-    # ax.scatter3D(X_3D[:, 0], X_3D[:, 1], X_3D[:, 2], c=X_3D[:, 2], cmap='viridis')
-    # ax.set_xlabel('x')
-    # ax.set_ylabel('y')
-    # ax.set_zlabel('z')
-    # ax.set_xlim([-0.5, 0.5])
-    # ax.set_ylim([-0.5, 0.5])
-    # ax.set_zlim([0, 5])
+    ind, _ = np.where(recon_bin == 1)
+    X_3D = X_3D[ind,:]
+    Color = Color[ind,:]
+    print(X_3D.shape)
 
-    # plt.show()
+    # For 3D plotting
+    ax = plt.axes(projection='3d')
+    # Data for three-dimensional scattered points
+    ax.scatter3D(X_3D[:, 0], X_3D[:, 1], X_3D[:, 2], c=X_3D[:, 2],cmap='viridis',s=1)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+    ax.set_xlim([-0.5, 1])
+    ax.set_ylim([-0.5, 1])
+    ax.set_zlim([0, 1.5])
+
+    plt.show()
 
     # For 2D plotting
 
-    ind, _ = np.where(recon_bin == 1)
-    X_3D = X_3D[ind]
-
-    plt.scatter(
-        X_3D[:, 0], X_3D[:, 2], c=X_3D[:, 2], cmap='viridis', s=1)
-    ax = plt.gca()
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
     
-    ax.set_xlim([-0.5, 1])
-    ax.set_ylim([-0.5, 2])
+
+    plt.scatter(X_3D[:, 0], X_3D[:, 2], c=Color/255.0, s=1)
+    ax1 = plt.gca()
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('z')
+    
+    # ax.set_xlim([-0.5, 1])
+    # ax.set_ylim([-0.5, 2])
 
     plt.show()
+
+    plt.scatter(X_3D[:, 0], X_3D[:, 1], c=Color/255.0, s=1)
+    ax1 = plt.gca()
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('y')
+    
+    # ax.set_xlim([-0.5, 1])
+    # ax.set_ylim([-0.5, 2])
+
+    plt.show()
+
+    # plt.scatter(X_3D[:, 1], X_3D[:, 2], c=Color/255.0, s=1)
+    # ax = plt.gca()
+    # ax.set_xlabel('y')
+    # ax.set_ylabel('z')
+    
+    # ax.set_xlim([-0.5, 1])
+    # ax.set_ylim([-0.5, 2])
+
+    # plt.show()
 
 
 if __name__ == '__main__':
