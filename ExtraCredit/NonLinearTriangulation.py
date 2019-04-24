@@ -2,7 +2,9 @@
 """
 import numpy as np
 import scipy.optimize as opt
+import sys
 
+sys.dont_write_bytecode = True
 
 def NonLinearTriangulation(K, x1, x2, X_init, R1, C1, R2, C2):
     """Summary

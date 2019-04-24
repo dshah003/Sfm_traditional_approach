@@ -1,5 +1,7 @@
 import numpy as np
+import sys
 
+sys.dont_write_bytecode = True
 
 # def get_camera_param():
 #     Cam = np.fromfile('Data/calibration_new.txt', sep=' ')

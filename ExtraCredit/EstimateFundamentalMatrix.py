@@ -1,5 +1,7 @@
 import numpy as np
+import sys
 
+sys.dont_write_bytecode = True
 
 def EstimateFundamentalMatrix(points_a, points_b):
     points_num = points_a.shape[0]

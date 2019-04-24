@@ -2,6 +2,9 @@
 """
 import numpy as np
 from EstimateFundamentalMatrix import EstimateFundamentalMatrix
+import sys
+
+sys.dont_write_bytecode = True
 
 
 def GetInliersRANSAC(matches_a, matches_b):
@@ -32,7 +35,7 @@ def GetInliersRANSAC(matches_a, matches_b):
             matches_bb = np.append(matches_b[i, :], 1)
             error = np.dot(matches_aa, F.T)
             error = np.dot(error, matches_bb.T)
-            if abs(error) < 0.05:
+            if abs(error) < 0.005:
                 in_a.append(matches_a[i, :])
                 in_b.append(matches_b[i, :])
                 update += 1
@@ -42,10 +45,8 @@ def GetInliersRANSAC(matches_a, matches_b):
             best_F = F
             inliers_a = in_a
             inliers_b = in_b
-            
 
     inliers_a = np.array(inliers_a)
     inliers_b = np.array(inliers_b)
-    
 
     return best_F, inliers_a, inliers_b

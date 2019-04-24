@@ -1,7 +1,21 @@
+""" File to implement function to calculate Fundamental Matrix
+"""
 import numpy as np
+import sys
+
+sys.dont_write_bytecode = True
 
 
 def EstimateFundamentalMatrix(points_a, points_b):
+    """Function to calculate Fundamental Matrix
+
+    Args:
+        points_a (list): List of points from image 1
+        points_b (list): List of points from image 2
+
+    Returns:
+        array: Fundamental Matrix
+    """
     points_num = points_a.shape[0]
     A = []
     B = np.ones((points_num, 1))

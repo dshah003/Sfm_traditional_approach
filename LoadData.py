@@ -1,33 +1,48 @@
+"""File to load data from the given files
+"""
 import numpy as np
 from GetInliersRANSAC import GetInliersRANSAC
+import sys
 
-def loadData(path="Data/"):
+sys.dont_write_bytecode = True
+
+def LoadData(path="Data/"):
+    """Main function to load data from files
+
+    Args:
+        path (str, optional): Path for input text files
+
+    Returns:
+        Mx: List of x coordinates of points
+        My: List of y coordinates of points
+        M: Binary List of features w.r.t. images
+        Color: List of RGB values of each feature
+    """
     n_images = 6
     Mx = []
     My = []
-    M =[]
+    M = []
     Color = []
     for i in range(1, n_images):
         mx = []
         my = []
-        m =[]
-        for j in range(i+1, n_images + 1):
+        m = []
+        for j in range(i + 1, n_images + 1):
 
-            x_list,y_list,binary_list,rgb_list = findCorrespondance(i, j,path)
+            x_list, y_list, binary_list, rgb_list = FindCorrespondence(
+                i, j, path)
 
-            if(j==i+1):
+            if (j == i + 1):
                 mx = x_list
                 my = y_list
                 m = binary_list
 
-
             else:
-                mx = np.hstack((mx,x_list[:,1].reshape((-1,1))))
-                my = np.hstack((my,y_list[:,1].reshape((-1,1))))
-                m = np.hstack((m,binary_list[:,1].reshape((-1,1))))
+                mx = np.hstack((mx, x_list[:, 1].reshape((-1, 1))))
+                my = np.hstack((my, y_list[:, 1].reshape((-1, 1))))
+                m = np.hstack((m, binary_list[:, 1].reshape((-1, 1))))
 
-
-        if(i==1):
+        if (i == 1):
             Mx = mx
             My = my
             M = m
@@ -35,27 +50,28 @@ def loadData(path="Data/"):
 
         else:
 
-            mx = np.hstack((np.zeros((mx.shape[0],i-1)),mx))
-            my = np.hstack((np.zeros((my.shape[0],i-1)),my))
-            m = np.hstack((np.zeros((m.shape[0],i-1)),m))
-            assert Mx.shape[1]==mx.shape[1],"SHape not matched"
-            Mx = np.vstack((Mx,mx))
-            assert My.shape[1]==my.shape[1],"Shape My not matched"
-            My = np.vstack((My,my))
-            M = np.vstack((M,m))
-            Color = np.vstack((Color,rgb_list))
-    return Mx,My,M,Color
+            mx = np.hstack((np.zeros((mx.shape[0], i - 1)), mx))
+            my = np.hstack((np.zeros((my.shape[0], i - 1)), my))
+            m = np.hstack((np.zeros((m.shape[0], i - 1)), m))
+            assert Mx.shape[1] == mx.shape[1], "SHape not matched"
+            Mx = np.vstack((Mx, mx))
+            assert My.shape[1] == my.shape[1], "Shape My not matched"
+            My = np.vstack((My, my))
+            M = np.vstack((M, m))
+            Color = np.vstack((Color, rgb_list))
+    return Mx, My, M, Color
 
 
-def findCorrespondance(a, b, database_path):
+def FindCorrespondence(a, b, database_path):
     """To extract corrospondance between 2 images from given file
 
     Args:
         a (int): First Image Number
         b (int): Second Image Number
+        database_path (str): path to read file
 
     Returns:
-        list: List of matching points: R,G,B,x1,y1,x2,y2
+        list: List of matching points: x,y, binary, rgb
     """
     matching_list = []
     if (1 <= a <= 6):
@@ -103,7 +119,7 @@ def findCorrespondance(a, b, database_path):
         rgb_row.append(current_row[1])
         rgb_row.append(current_row[2])
 
-        if(len(res[0]) != 0):
+        if (len(res[0]) != 0):
             index = res[0][0]
             x_row.append(current_row[index + 1])
             y_row.append(current_row[index + 2])
@@ -120,11 +136,23 @@ def findCorrespondance(a, b, database_path):
             binary_list.append(np.transpose(binary_row))
             rgb_list.append(np.transpose(rgb_row))
 
+    return np.array(x_list), np.array(y_list), np.array(binary_list), np.array(
+        rgb_list)
 
 
-    return np.array(x_list), np.array(y_list), np.array(binary_list), np.array(rgb_list)
+def inlier_filter(Mx, My, M, n_images):
+    """To filter the binary list for inliers
 
-def inlier_filter(Mx,My,M,n_images):
+    Args:
+        Mx (array): x coordinates of points
+        My (array): y coordinates of points
+        M (array): Binary list of features
+        n_images (int): Number of images
+
+    Returns:
+        TYPE: Corrected List of inliers binary list, Outlier indices
+    """
+    outlier_indices = np.zeros(M.shape)
     for i in range(1, n_images):
         for j in range(i + 1, n_images + 1):
             img1 = i
@@ -145,9 +173,11 @@ def inlier_filter(Mx,My,M,n_images):
                 np.float32(pts1), np.float32(pts2), indices)
             assert len(inliers_a) == len(inliers_b) == len(
                 inlier_index), "Length not matched"
-
+            print("Inliers found :" + str(len(inliers_a)) + "/" +
+                  str(len(pts1)))
             for k in indices:
-                # if (np.isin(inlier_index, k)[0]):
                 if (k not in inlier_index):
                     M[k, i - 1] = 0
-    return M
+                    outlier_indices[k, i - 1] = 1
+                    outlier_indices[k, j - 1] = 1
+    return M, outlier_indices

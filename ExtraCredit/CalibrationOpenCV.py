@@ -1,7 +1,9 @@
 import numpy as np
 import cv2
 import glob
+import sys
 
+sys.dont_write_bytecode = True
 
 """
 [[3.79728180e+03 0.00000000e+00 2.08038461e+03]

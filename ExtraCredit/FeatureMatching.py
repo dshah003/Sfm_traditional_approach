@@ -1,6 +1,8 @@
-# import numpy as np
 import cv2
-# from matplotlib import pyplot as plt
+import sys
+
+sys.dont_write_bytecode = True
+
 
 # img1 = cv2.imread('Images/1.jpeg')
 # print(img1.shape)

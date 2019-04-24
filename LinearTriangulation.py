@@ -1,35 +1,17 @@
-"""Summary
+""" File to implement Linear Triangulation
 """
 import numpy as np
+import sys
+
+sys.dont_write_bytecode = True
 
 
 def skew(x):
-    """Summary
-
-    Args:
-        x (TYPE): Description
-
-    Returns:
-        TYPE: Description
-    """
     return np.array([[0, -x[2], x[1]], [x[2], 0, x[0]], [x[1], x[0], 0]])
 
 
 def LinearTriangulation(K, C1, R1, C2, R2, x1, x2):
-    """Summary
 
-    Args:
-        K (TYPE): Description
-        C1 (TYPE): Description
-        R1 (TYPE): Description
-        C2 (TYPE): Description
-        R2 (TYPE): Description
-        x1 (TYPE): Description
-        x2 (TYPE): Description
-
-    Returns:
-        TYPE: Description
-    """
     I = np.identity(3)
     sz = x1.shape[0]
     C1 = np.reshape(C1, (3, 1))

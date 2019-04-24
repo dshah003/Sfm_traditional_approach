@@ -44,11 +44,7 @@ def PnPRANSAC(X, x, K):
     """
     cnt = 0
     M = x.shape[0]
-    # p = 0.99
     threshold = 5  #6
-    # N = 1
-    # idx = 0
-    # X_ = LPnP.convertHomogeneouos(X)
     x_ = LPnP.convertHomogeneouos(x)
 
     Cnew = np.zeros((3, 1))
@@ -74,5 +70,5 @@ def PnPRANSAC(X, x, K):
 
         if (countS == M):
             break
-    print("Inliers = " + str(cnt) + "/" + str (M))
+    # print("Inliers = " + str(cnt) + "/" + str(M))
     return Cnew, Rnew

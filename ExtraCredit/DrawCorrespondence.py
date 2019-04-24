@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
+import sys
 
+sys.dont_write_bytecode = True
 
 def DrawCorrespondence(img1, img2, inliers_a, inliers_b):
     

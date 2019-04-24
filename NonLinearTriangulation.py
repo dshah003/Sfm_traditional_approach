@@ -21,8 +21,8 @@ def NonLinearTriangulation(K, x1, x2, X_init, R1, C1, R2, C2):
         TYPE: Description
     """
     sz = x1.shape[0]
-    print(R2)
-    print(C2)
+    # print(R2)
+    # print(C2)
     assert x1.shape[0] == x2.shape[0] == X_init.shape[
         0], "2D-3D corresspondences have different shape "
     X = np.zeros((sz, 3))

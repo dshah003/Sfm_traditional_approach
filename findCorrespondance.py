@@ -1,3 +1,5 @@
+""" File to implement function to find correspondence between 2 images
+"""
 import numpy as np
 
 
@@ -56,7 +58,7 @@ def findCorrespondance(a, b):
         y_row.append(current_row[4])
         binary_row.append(1)
 
-        if(len(res[0]) != 0):
+        if (len(res[0]) != 0):
             index = res[0][0]
 
             rgb_row.append(current_row[0])
@@ -77,4 +79,5 @@ def findCorrespondance(a, b):
             binary_list.append(np.transpose(binary_row))
             rgb_list.append(np.transpose(rgb_row))
 
-    return np.array(x_list), np.array(y_list), np.array(binary_list), np.array(rgb_list)
+    return np.array(x_list), np.array(y_list), np.array(binary_list), np.array(
+        rgb_list)

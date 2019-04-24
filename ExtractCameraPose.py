@@ -1,8 +1,20 @@
+""" File to implement function for Extracting Camera Pose
+"""
 import numpy as np
+import sys
+
+sys.dont_write_bytecode = True
 
 
 def ExtractCameraPose(E, K):
+    """
+    Args:
+        E (array): Essential Matrix
+        K (array): Intrinsic Matrix
 
+    Returns:
+        arrays: set of Rotation and Camera Centers
+    """
     U, S, V_T = np.linalg.svd(E)
     W = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
 
